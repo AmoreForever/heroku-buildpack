@@ -1,0 +1,43 @@
+#!/bin/sh
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+ENV_DIR=$3
+
+if [ -f $ENV_DIR/authorization_strings ]; then
+  export authorization_strings="$(cat $ENV_DIR/authorization_strings)"
+else
+  echo "-----> Missing authorization_strings"
+  exit 0
+fi
+if [ -f $ENV_DIR/postgre_uri ]; then
+  export postgre_uri="$(cat $ENV_DIR/postgre_uri)"
+else
+  echo "-----> Missing postgre_uri"
+  exit 0
+fi
+if [ -f $ENV_DIR/api_hash ]; then
+  export api_hash="$(cat $ENV_DIR/api_hash)"
+else
+  echo "-----> Missing api_hash"
+  exit 0
+fi
+if [ -f $ENV_DIR/api_id ]; then
+  export api_id="$(cat $ENV_DIR/api_id)"
+else
+  echo "-----> Missing api_id"
+  exit 0
+fi
+if [ -f $ENV_DIR/heroku_api_token ]; then
+  export heroku_api_token="$(cat $ENV_DIR/heroku_api_token)"
+else
+  echo "-----> Missing heroku_api_token"
+  exit 0
+fi
+
+export PIP_TARGET="$(echo $1/.heroku/python/lib/python*.*/site-packages)"
+
+echo "-----> Installing Telegram-stored dependencies"
+cd $1
+python3 -m amore
+exit $?
